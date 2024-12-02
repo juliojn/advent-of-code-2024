@@ -73,7 +73,7 @@ fn part_2(input: &str) -> u64
 
 pub fn main()
 {
-    let input_file = "input/day_1_input.txt";
+    let input_file = "input/day_01/input.txt";
     let input = fs::read_to_string(input_file);
 
     match input
@@ -97,7 +97,7 @@ mod tests {
 
     #[test]
     fn test_1() {
-        let input_file = "input/day_1_test.txt";
+        let input_file = "input/day_01/test.txt";
         let input = fs::read_to_string(input_file).unwrap();
 
         let result = part_1(&input);
@@ -107,7 +107,7 @@ mod tests {
     
     #[test]
     fn test_2() {
-        let input_file = "input/day_1_test.txt";
+        let input_file = "input/day_01/test.txt";
         let input = fs::read_to_string(input_file).unwrap();
 
         let result = part_2(&input);

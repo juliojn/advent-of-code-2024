@@ -1,6 +1,9 @@
-mod day_1;
+#[allow(dead_code)]
+
+mod day_01;
+mod day_02;
 
 fn main()
 {
-    day_1::main();
+    day_02::main();
 }

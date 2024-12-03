@@ -163,6 +163,7 @@ fn part_2(input: &str) -> u64
     safe_lines
 }
 
+#[allow(dead_code)]
 pub fn main()
 {
     let input_file = "input/day_02/input.txt";

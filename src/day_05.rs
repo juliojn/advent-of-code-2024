@@ -84,11 +84,62 @@ fn part_1(input: &str) -> u64
     sum
 }
 
+fn part_2(input: &str) -> u64
+{
+    let mut sum = 0;
+    let mut v0 = Vec::new();
+    let mut v1 = Vec::new();
+    let mut updates = Vec::new();
+
+    read_file(input, &mut v0, &mut v1, &mut updates);
+
+    // dbg!(&v0, &v1, &updates);
+
+    for update_line_idx in 0..updates.len()
+    {
+        let update_line = &mut updates[update_line_idx];
+        let mut valid_update = true;
+
+        for upd_idx_0 in 0..update_line.len()
+        {
+            for upd_idx_1 in 0..update_line.len()
+            {
+                for i in 0..v0.len()
+                {
+                    if v0[i] == update_line[upd_idx_0]
+                    {
+                        if v1[i] == update_line[upd_idx_1]
+                        {
+                            if upd_idx_0 > upd_idx_1
+                            {
+                                // dbg!(format!("{} {}", v0[i],v1[i]));
+                                let aux = update_line[upd_idx_0];
+                                update_line[upd_idx_0] = update_line[upd_idx_1];
+                                update_line[upd_idx_1] = aux;
+                                valid_update = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if !valid_update
+        {
+            sum += update_line[update_line.len() / 2];
+            // dbg!(sum);
+        }
+    }
+    dbg!(&updates);
+
+    sum
+}
+
 pub fn main()
 {
     let input_file = "input/day_05/input.txt";
     let input = fs::read_to_string(input_file);
-    let part = "1";
+    let part = "2";
 
     match input
     {
@@ -101,8 +152,8 @@ pub fn main()
             }
             else if part == "2"
             {
-                // let result = part_2(&input);
-                // println!("{result}");
+                 let result = part_2(&input);
+                 println!("{result}");
             }
         },
         Err(error) =>
@@ -124,5 +175,15 @@ mod tests {
         let result = part_1(&input);
 
         assert_eq!(result, 143);
+    }
+
+    #[test]
+    fn test_02() {
+        let input_file = "input/day_05/test_01.txt";
+        let input = fs::read_to_string(input_file).unwrap();
+
+        let result = part_2(&input);
+
+        assert_eq!(result, 123);
     }
 }

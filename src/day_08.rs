@@ -44,7 +44,7 @@ fn part_1(input: &str) -> u64
                     for map_j in 0..width
                     {
                         let c = map[map_i as usize][map_j as usize];
-                        if c != '.' && map_i != node_i && map_j != node_j
+                        if c != '.' && (map_i != node_i || map_j != node_j)
                         {
                             let new_i = node_i + 2*(map_i - node_i);
                             let new_j = node_j + 2*(map_j - node_j);
@@ -65,7 +65,58 @@ fn part_1(input: &str) -> u64
     
     for i in 0..length as usize
     {
-        // println!("{:?}", antinode[i]);
+        println!("{:?}", antinode[i]);
+        for j in 0..width as usize
+        {
+            if antinode[i][j] == '#'
+            {
+                sum += 1;
+            }
+        }
+    }
+
+
+    sum
+}
+
+fn part_2(input: &str) -> u64
+{
+    let mut sum = 0;
+    let map = str_to_matrix(input);
+    let length = map.len() as i64;
+    let width = map[0].len() as i64;
+    let mut antinode = vec![vec!['.';width as usize];length as usize];
+
+    for map_i_1 in 0..length as i64
+    {
+        for map_j_1 in 0..width as i64
+        {
+            for map_i_2 in 0..length
+            {
+                for map_j_2 in 0..width
+                {
+                    let c = map[map_i_1 as usize][map_j_1 as usize];
+                    if c != '.' && map[map_i_2 as usize][map_j_2 as usize] == c &&
+                        (map_i_1 != map_i_2 || map_j_1 != map_j_2)
+                    {
+                        let mut new_i = map_i_1;
+                        let mut new_j = map_j_1;
+
+                        while in_bound(new_i, new_j, length, width)
+                        {
+                            antinode[new_i as usize][new_j as usize] = '#';
+                            new_i += map_i_2 - map_i_1;
+                            new_j += map_j_2 - map_j_1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    for i in 0..length as usize
+    {
+        println!("{:?}", antinode[i]);
         for j in 0..width as usize
         {
             if antinode[i][j] == '#'
@@ -82,9 +133,9 @@ fn part_1(input: &str) -> u64
 pub fn main()
 {
     let input_file = "input/day_08/input.txt";
-    // let input_file = "input/day_08/test_01.txt";
+    // let input_file = "input/day_08/test_02.txt";
     let input = fs::read_to_string(input_file);
-    let part = "1";
+    let part = "2";
 
     match input
     {
@@ -97,8 +148,8 @@ pub fn main()
             }
             else if part == "2"
             {
-                // let result = part_2(&input);
-                // println!("{result}");
+                let result = part_2(&input);
+                println!("{result}");
             }
         },
         Err(error) =>
@@ -120,5 +171,15 @@ mod tests {
         let result = part_1(&input);
 
         assert_eq!(result, 14);
+    }
+    
+    #[test]
+    fn test_02() {
+        let input_file = "input/day_08/test_02.txt";
+        let input = fs::read_to_string(input_file).unwrap();
+
+        let result = part_2(&input);
+
+        assert_eq!(result, 9);
     }
 }

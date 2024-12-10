@@ -120,54 +120,47 @@ fn part_2(input: &str) -> u64
 
         while index > 0
         {
-            if block[j-1] != -1
+            page_1 = j;
+            while block[page_1] != index
             {
-                page_1 = j;
-                while block[page_1] != index
-                {
-                    page_1 -= 1;
-                }
-                page_0 = page_1;
-                while page_0 > 0 && block[page_0-1] == index
-                {
-                    page_0 -= 1;
-                }
-                j = page_0;
-
-                i = 0;
-                while i < j
-                {
-                    free_0 = i;
-                    while free_0 < block.len() && block[free_0] != -1
-                    {
-                        free_0 += 1;
-                    }
-                    free_1 = free_0;
-                    while free_1 < block.len()-1 && block[free_1+1] == -1
-                    {
-                        free_1 += 1;
-                    }
-
-                    if free_1-free_0 >= page_1-page_0
-                    {
-                        for index in 0..=page_1-page_0
-                        {
-                            block.swap(free_0+index, page_0+index);
-                        }
-                        // dbg!(&block);
-                        break;
-                    }
-                    else
-                    {
-                        i = free_1+1;    
-                    }
-                }
-                index -= 1;
+                page_1 -= 1;
             }
-            else
+            page_0 = page_1;
+            while page_0 > 0 && block[page_0-1] == index
             {
-                j -= 1;
+                page_0 -= 1;
             }
+            j = page_0;
+
+            i = 0;
+            while i < j 
+            {
+                free_0 = i;
+                while free_0 < block.len() && block[free_0] != -1
+                {
+                    free_0 += 1;
+                }
+                free_1 = free_0;
+                while free_1 < block.len()-1 && block[free_1+1] == -1
+                {
+                    free_1 += 1;
+                }
+
+                if free_1-free_0 >= page_1-page_0
+                {
+                    for index in 0..=page_1-page_0
+                    {
+                        block.swap(free_0+index, page_0+index);
+                    }
+                    // dbg!(&block);
+                    break;
+                }
+                else
+                {
+                    i = free_1+1;    
+                }
+            }
+            index -= 1;
         }
 
         for i in 0..block.len()

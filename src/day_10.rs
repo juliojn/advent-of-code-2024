@@ -89,7 +89,6 @@ fn part_1(input: &str) -> u64
 
             while let Some(mov) = movements.pop_front()
             {
-                // let pos_value = get_value(&map, pos.0);
                 match mov.altitude
                 {
                     9 =>
@@ -141,12 +140,105 @@ fn part_1(input: &str) -> u64
     sum
 }
 
+fn part_2(input: &str) -> u64
+{
+    let mut sum = 0;
+
+    let map = read_file(input);
+    let mut vector_start = Vec::new();
+    let mut vector_end = Vec::new();
+    let heigth = map.len();
+    let width= map[0].len();
+
+    for i in 0..map.len()
+    {
+        for j in 0..map[i].len()
+        {
+            let pos = Position{row:i as i64 ,colm:j as i64};
+            match get_value(&map, pos)
+            {
+                Some(n) =>
+                {
+                    match n
+                    {
+                        0 => {vector_start.push(pos);}
+                        9 => {vector_end.push(pos);}
+                        _ => {}
+                    }
+                }
+                None => {}
+            }
+        }
+    }
+
+    for start in &vector_start
+    {
+        // let mut routes = 0;
+        for end in &vector_end
+        {
+            let mut movements = VecDeque::new();
+
+
+            movements.push_back(Movement{pos:start.clone(), altitude:0});
+
+            while let Some(mov) = movements.pop_front()
+            {
+                match mov.altitude
+                {
+                    9 =>
+                    {
+                        if mov.pos == *end
+                        {
+                            sum += 1;
+                            dbg!(&start, &end);
+                        }
+                    }
+                    0..=8 =>
+                    {
+                        let mut new_mov = vec![mov;4];
+                        new_mov[0].pos.row -= 1;
+                        new_mov[1].pos.row += 1;
+                        new_mov[2].pos.colm -= 1;
+                        new_mov[3].pos.colm += 1;
+
+                        new_mov[0].altitude += 1;
+                        new_mov[1].altitude += 1;
+                        new_mov[2].altitude += 1;
+                        new_mov[3].altitude += 1;
+
+                        for it in new_mov
+                        {
+                            if in_bound(it.pos, heigth, width)
+                            {
+                                if get_value(&map, it.pos).unwrap() == it.altitude
+                                {
+                                    movements.push_back(it);
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            
+        }
+    }
+
+
+    dbg!(&vector_start);
+    dbg!(&vector_end);
+
+
+    sum
+}
+
 pub fn main()
 {
     let input_file = "input/day_10/input.txt";
     // let input_file = "input/day_10/test_01.txt";
     let input = fs::read_to_string(input_file);
-    let part = "1";
+    let part = "2";
 
     match input
     {
@@ -159,8 +251,8 @@ pub fn main()
             }
             else if part == "2"
             {
-                // let result = part_2(&input);
-                // println!("{result}");
+                let result = part_2(&input);
+                println!("{result}");
             }
         },
         Err(error) =>
@@ -182,5 +274,15 @@ mod tests {
         let result = part_1(&input);
 
         assert_eq!(result, 36);
+    }
+    
+    #[test]
+    fn test_02() {
+        let input_file = "input/day_10/test_01.txt";
+        let input = fs::read_to_string(input_file).unwrap();
+
+        let result = part_2(&input);
+
+        assert_eq!(result, 81);
     }
 }
